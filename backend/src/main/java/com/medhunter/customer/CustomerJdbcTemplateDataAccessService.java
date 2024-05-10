@@ -1,7 +1,6 @@
 package com.medhunter.customer;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,7 +18,7 @@ private final CustomerRowMapper customerRowMapper ;
     @Override
     public List<Customer> selectAllCustomers() {
         String sql = """
-                SELECT id , name , email , age FROM customer 
+                SELECT id , name , email , age FROM customer
                 """ ;
       /*  RowMapper<Customer> customerRowMapper = (rs, rowNum) -> {
             Customer customer = new Customer(
@@ -59,7 +58,7 @@ private final CustomerRowMapper customerRowMapper ;
                 INSERT INTO customer(name , email , age )
                  VALUES(? , ? , ? )
                 """ ;
-        int reslt = jdbcTemplate.update(sql , customer.getName() , customer.getEmail() , customer.getAge()) ;
+        jdbcTemplate.update(sql , customer.getName() , customer.getEmail() , customer.getAge()) ;
 
     }
 
@@ -92,7 +91,7 @@ private final CustomerRowMapper customerRowMapper ;
     @Override
     public boolean existPersonWithId(Long id) {
         String sql = """
-                SELECT id , name , email , age FROM customer WHERE id=?
+                SELECT id , name , email , age FROM customer WHERE email=?
                 """ ;
 
         boolean b = ! jdbcTemplate.query(sql, customerRowMapper, id).stream().findFirst().isEmpty();
