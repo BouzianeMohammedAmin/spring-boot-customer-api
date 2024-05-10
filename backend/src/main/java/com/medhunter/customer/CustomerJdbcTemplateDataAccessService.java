@@ -91,7 +91,7 @@ private final CustomerRowMapper customerRowMapper ;
     @Override
     public boolean existPersonWithId(Long id) {
         String sql = """
-                SELECT id , name , email , age FROM customer WHERE email=?
+                SELECT id , name , email , age FROM customer WHERE  email =?
                 """ ;
 
         boolean b = ! jdbcTemplate.query(sql, customerRowMapper, id).stream().findFirst().isEmpty();
