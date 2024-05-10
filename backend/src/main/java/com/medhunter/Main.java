@@ -16,14 +16,6 @@ public class Main {
     public static void main(String[] args) {
         ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(Main.class, args);
 
-
-        /*
-        String [] benDef = configurableApplicationContext.getBeanDefinitionNames() ;
-        for (String name : benDef) {
-            System.out.println("-----> " + name);
-        }*/
-
-
     }
 
 
