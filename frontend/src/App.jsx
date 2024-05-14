@@ -1,14 +1,23 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import {useEffect} from 'react'
 import './App.css'
-import { Button, ButtonGroup } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import SidebarWithHeader from './shared/SideBar'
+import {getCostumers} from "./services/Client.jsx";
 
 function App() {
-  const [count, setCount] = useState(0)
+
+    useEffect(()=>{
+        getCostumers().then(res=>{
+            console.log(res)
+        }).catch(err=>{
+            console.log(err)
+        })
+    },[])
 
   return (
+
+
+
     <div>
        
         <SidebarWithHeader>
