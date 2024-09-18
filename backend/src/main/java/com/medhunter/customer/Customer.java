@@ -2,7 +2,12 @@ package com.medhunter.customer;
 
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 @Entity
 @Table(
@@ -14,7 +19,7 @@ import java.util.Objects;
                 )
         }
 )
-public class Customer {
+public class Customer  implements UserDetails {
 
     @Id
     @SequenceGenerator(
@@ -40,18 +45,39 @@ public class Customer {
             nullable = false
     )
     private String email ;
+    @Column(
+            nullable = false
+    )
+    @Enumerated(EnumType.STRING)
+    private Gender gender ;
+    @Column(
+            nullable = false
+    )
+    private String password;
 
-    public Customer(Integer age, String email, String name) {
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public Customer(String name, String email, String password, Integer age, Gender gender) {
         this.name = name;
         this.age = age;
         this.email = email;
+        this.gender=gender ;
+        this.password=password ;
     }
 
-    public Customer(Long id, String name, Integer age, String email) {
+    public Customer(Long id, String name, String email, String password, Integer age, Gender gender) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.email = email;
+        this.gender = gender ;
+        this.password=password ;
     }
 
     public Customer() {
@@ -95,7 +121,12 @@ public class Customer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Customer customer = (Customer) o;
-        return Objects.equals(id, customer.id) && Objects.equals(name, customer.name) && Objects.equals(age, customer.age) && Objects.equals(email, customer.email);
+        return Objects.equals(id, customer.id) && Objects.equals(name, customer.name) && Objects.equals(age, customer.age) && Objects.equals(email, customer.email) && gender == customer.gender;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, age, email, gender);
     }
 
     @Override
@@ -105,11 +136,42 @@ public class Customer {
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", email='" + email + '\'' +
+                ", gender=" + gender +
                 '}';
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, name, age, email);
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_USER")) ;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

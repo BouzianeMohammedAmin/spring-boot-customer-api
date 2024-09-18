@@ -3,7 +3,7 @@ server:
   error:
     include-message: always
 core:
-  allowed-origins: "*"
+  allowed-origins: "http://localhost:5173/"
   allowed-methods: "*"
 spring:
   datasource:

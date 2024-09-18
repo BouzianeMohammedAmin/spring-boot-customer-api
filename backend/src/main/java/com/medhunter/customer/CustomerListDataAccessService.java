@@ -11,11 +11,11 @@ public class CustomerListDataAccessService implements  CustomerDao{
     private static final List<Customer> customers  ;
     static  {
         customers = new ArrayList<Customer>() ;
-        Customer ossama = new Customer(1L, "Ossamalist" , 28 , "ossama@gmail.com") ;
+        Customer ossama = new Customer(1L, "Ossamalist" , "ossama@gmail.com", "password", 28 , Gender.MALE) ;
         customers.add(ossama) ;
-        Customer amine = new Customer(2L, "aminelist" , 26 , "amine@gmail.com") ;
+        Customer amine = new Customer(2L, "aminelist" , "amine@gmail.com", "password", 26 , Gender.MALE) ;
         customers.add(amine) ;
-        Customer hato = new Customer(3L, "hatolist" , 41 , "hato@gmail.com") ;
+        Customer hato = new Customer(3L, "hatolist" , "hato@gmail.com", "password", 41 , Gender.MALE) ;
         customers.add(hato) ;
     }
     @Override
@@ -67,6 +67,11 @@ public class CustomerListDataAccessService implements  CustomerDao{
                     customer1.setAge(customer.getAge());
                     customer1.setEmail(customer.getEmail());
                 });
+    }
+
+    @Override
+    public Optional<Customer> selectCustomerByEmail(String Email) {
+        return Optional.empty();
     }
 
     /*

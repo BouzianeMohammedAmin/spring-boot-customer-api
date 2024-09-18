@@ -27,7 +27,6 @@ class CustomerRepositoryTest  extends AbstractTestContainer {
 
     @BeforeEach
     void setUp() {
-        System.out.println(applicationContext.getBeanDefinitionCount());
     }
 
     @Test
@@ -35,9 +34,9 @@ class CustomerRepositoryTest  extends AbstractTestContainer {
 
         String email =  faker.internet().safeEmailAddress()+ "-"+ UUID.randomUUID();
         Customer customer = new Customer(
-                20, email, faker.name().fullName()
+                faker.name().fullName(), email, "password", 20,
 
-        ) ;
+                Gender.MALE) ;
 
         underTest.save(customer);
 
@@ -51,9 +50,9 @@ class CustomerRepositoryTest  extends AbstractTestContainer {
 
         String email =  faker.internet().safeEmailAddress()+ "-"+ UUID.randomUUID();
         Customer customer = new Customer(
-                20, email, faker.name().fullName()
+                faker.name().fullName(), email, "password", 20,
 
-        ) ;
+                Gender.MALE) ;
 
         underTest.save(customer);
 

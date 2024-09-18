@@ -1,6 +1,7 @@
 package com.medhunter;
 import com.medhunter.customer.Customer;
 import com.medhunter.customer.CustomerRepository;
+import com.medhunter.customer.Gender;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,11 +34,11 @@ public class Main {
     CommandLineRunner runner(CustomerRepository customerRepository){
 
         return args ->{
-            Customer ossama = new Customer(1L, "Ossama" , 28 , "ossama@gmail.com") ;
+            Customer ossama = new Customer(1L, "Ossama" , "ossama@gmail.com", "password", 28 , Gender.MALE) ;
            // Customer amine = new Customer(2L, "amine" , 26 , "aminez@gmail.com") ;
-            Customer hato = new Customer(3L, "hato" , 41 , "haaato@gmail.com") ;
+            Customer hato = new Customer(3L, "hato" , "haaato@gmail.com", "password", 41 , Gender.MALE) ;
             List<Customer> customers = List.of(ossama , hato) ;
-            customerRepository.saveAll(customers) ;
+           // customerRepository.saveAll(customers) ;
 
         };}
 

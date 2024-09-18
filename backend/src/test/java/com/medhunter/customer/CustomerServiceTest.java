@@ -6,18 +6,15 @@ import com.medhunter.exception.RequestValidateException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
@@ -25,6 +22,8 @@ import static org.mockito.Mockito.*;
 class CustomerServiceTest {
     @Mock
     private CustomerDao customerDao ;
+    @Mock
+    private PasswordEncoder passwordEncoder ;
     private CustomerService underTest ;
     private   AutoCloseable autoCloseable ;
 
@@ -32,7 +31,7 @@ class CustomerServiceTest {
     @BeforeEach
     void setUp() {
          autoCloseable = MockitoAnnotations.openMocks(this);
-        underTest = new CustomerService(customerDao) ;
+        underTest = new CustomerService(customerDao , passwordEncoder ) ;
     }
 
     @AfterEach
@@ -53,7 +52,7 @@ class CustomerServiceTest {
     void canGetCustomer() {
         Long id = 10L;
 
-        Customer customer = new Customer(id , "amine" ,12,"bouznaine@hmauil.com"  ) ;
+        Customer customer = new Customer(id , "amine" , "bouznaine@hmauil.com", "password", 12, Gender.MALE) ;
         when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer)) ;
 
 
@@ -86,7 +85,7 @@ class CustomerServiceTest {
         when(customerDao.existPersonWithEmail(email)).thenReturn(false) ;
 
         CustomerRegistrationRequest request = new CustomerRegistrationRequest
-                ("bouziane", "test@mail.com1", 13);
+                ("bouziane", "test@mail.com1", "password", 13, Gender.MALE);
         underTest.addCustomer(request);
 
         ArgumentCaptor<Customer> customerArgumentCaptor = ArgumentCaptor.forClass(Customer.class) ;
@@ -105,7 +104,7 @@ class CustomerServiceTest {
         String email = "test@mail.com" ;
 
         CustomerRegistrationRequest request = new CustomerRegistrationRequest
-                ("bouziane", email, 13);
+                ("bouziane", email, "password", 13, Gender.MALE);
 
 
         when(customerDao.existPersonWithEmail(email)).thenReturn(true) ;
@@ -148,7 +147,7 @@ class CustomerServiceTest {
     void canUpdateAllPropertyUpdateCustomerById() {
         Long id = 10L;
 
-        Customer customer = new Customer(id , "amine" ,12,"bouznaine@hmauil.com"  ) ;
+        Customer customer = new Customer(id , "amine" , "bouznaine@hmauil.com", "password", 12, Gender.MALE) ;
         when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer)) ;
         String email= "moh@gmail.com" ;
     CustomerUpdateRequest  updateRequest = new CustomerUpdateRequest(
@@ -176,7 +175,7 @@ Customer customerCaptured = argumentCaptor.getValue();
     void CanUpdateOnlyNamePropertyUpdateCustomerById() {
         Long id = 10L;
 
-        Customer customer = new Customer(id , "amine" ,12,"bouznaine@hmauil.com"  ) ;
+        Customer customer = new Customer(id , "amine" , "bouznaine@hmauil.com", "password", 12, Gender.MALE) ;
         when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer)) ;
         String email= "moh@gmail.com" ;
         CustomerUpdateRequest  updateRequest = new CustomerUpdateRequest(
@@ -204,7 +203,7 @@ Customer customerCaptured = argumentCaptor.getValue();
     void updateCustomerById() {
         Long id = 10L;
 
-        Customer customer = new Customer(id , "amine" ,12,"bouznaine@hmauil.com"  ) ;
+        Customer customer = new Customer(id , "amine" , "bouznaine@hmauil.com", "password", 12, Gender.MALE) ;
         when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer)) ;
         String email= "moh@gmail.com" ;
         CustomerUpdateRequest  updateRequest = new CustomerUpdateRequest(
@@ -233,7 +232,7 @@ Customer customerCaptured = argumentCaptor.getValue();
     void canUpdateOnlyAgeProperty() {
         Long id = 10L;
 
-        Customer customer = new Customer(id , "amine" ,12,"bouznaine@hmauil.com"  ) ;
+        Customer customer = new Customer(id , "amine" , "bouznaine@hmauil.com", "password", 12, Gender.MALE) ;
         when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer)) ;
         String email= "moh@gmail.com" ;
         CustomerUpdateRequest  updateRequest = new CustomerUpdateRequest(
@@ -260,7 +259,7 @@ Customer customerCaptured = argumentCaptor.getValue();
     void canUpdateOnlyEmailProperty() {
         Long id = 10L;
 
-        Customer customer = new Customer(id , "amine" ,12,"bouznaine@hmauil.com"  ) ;
+        Customer customer = new Customer(id , "amine" , "bouznaine@hmauil.com", "password", 12, Gender.MALE) ;
         when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer)) ;
         String email= "moh@gmail.com" ;
         CustomerUpdateRequest  updateRequest = new CustomerUpdateRequest(
@@ -289,7 +288,7 @@ Customer customerCaptured = argumentCaptor.getValue();
     void canUpdateOnlyNameProperty() {
         Long id = 10L;
 
-        Customer customer = new Customer(id , "amine" ,12,"bouznaine@hmauil.com"  ) ;
+        Customer customer = new Customer(id , "amine" , "bouznaine@hmauil.com", "password", 12, Gender.MALE) ;
         when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer)) ;
         String email= "moh@gmail.com" ;
         CustomerUpdateRequest  updateRequest = new CustomerUpdateRequest(
@@ -317,7 +316,7 @@ Customer customerCaptured = argumentCaptor.getValue();
     void willThrowWhenEmailUpdateExistThisEmail() {
         Long id = 10L;
 
-        Customer customer = new Customer(id , "amine" ,12,"bouznaine@hmauil.com"  ) ;
+        Customer customer = new Customer(id , "amine" , "bouznaine@hmauil.com", "password", 12, Gender.MALE) ;
         when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer)) ;
         String email= "moh@gmail.com" ;
         CustomerUpdateRequest  updateRequest = new CustomerUpdateRequest(
@@ -339,7 +338,7 @@ Customer customerCaptured = argumentCaptor.getValue();
     void willThrowWhenNoDataCHanged() {
         Long id = 10L;
 
-        Customer customer = new Customer(id , "amine" ,12,"bouznaine@hmauil.com"  ) ;
+        Customer customer = new Customer(id , "amine" , "bouznaine@hmauil.com", "password", 12, Gender.MALE) ;
         when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer)) ;
         String email="bouznaine@hmauil.com";
         CustomerUpdateRequest  updateRequest = new CustomerUpdateRequest(

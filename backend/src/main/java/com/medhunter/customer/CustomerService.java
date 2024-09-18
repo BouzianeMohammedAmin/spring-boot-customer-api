@@ -5,6 +5,7 @@ import com.medhunter.exception.DuplicateResourceException;
 import com.medhunter.exception.NoteFoundResourceExecption;
 import com.medhunter.exception.RequestValidateException;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,10 +13,13 @@ import java.util.List;
 //@Component
 public class CustomerService {
 
-    CustomerDao customerDao ;
+    private final CustomerDao customerDao ;
+    private final PasswordEncoder passwordEncoder ;
 
-    public CustomerService(@Qualifier("jdbc") CustomerDao customerDao) {
+
+    public CustomerService(@Qualifier("jpa") CustomerDao customerDao, PasswordEncoder passwordEncoder) {
         this.customerDao = customerDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     List<Customer> getAllCustomer(){
@@ -40,8 +44,8 @@ public class CustomerService {
             // add
             customerDao.insertCustomer(
                     new Customer(
-                            customerRegistrationRequest.age(), customerRegistrationRequest.email(), customerRegistrationRequest.name()
-                    )
+                            customerRegistrationRequest.name(), customerRegistrationRequest.email(),passwordEncoder.encode( customerRegistrationRequest.password()), customerRegistrationRequest.age(),
+                            customerRegistrationRequest.gender())
             ) ;
     }
 

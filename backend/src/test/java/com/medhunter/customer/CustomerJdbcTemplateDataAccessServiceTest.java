@@ -28,9 +28,9 @@ class CustomerJdbcTemplateDataAccessServiceTest extends AbstractTestContainer {
     void selectAllCustomers() {
 
         Customer customer = new Customer(
-                20, faker.internet().safeEmailAddress()+ "-"+UUID.randomUUID(), faker.name().fullName()
+                faker.name().fullName(), faker.internet().safeEmailAddress()+ "-"+UUID.randomUUID(), "password", 20,
 
-        ) ;
+                Gender.MALE) ;
 
         underTest.insertCustomer(customer);
 
@@ -42,9 +42,9 @@ class CustomerJdbcTemplateDataAccessServiceTest extends AbstractTestContainer {
     void selectCustomerById() {
         String email =  faker.internet().safeEmailAddress()+ "-"+UUID.randomUUID();
         Customer customer = new Customer(
-                20, email, faker.name().fullName()
+                faker.name().fullName(), email, "password", 20,
 
-        ) ;
+                Gender.MALE) ;
 
         underTest.insertCustomer(customer);
 
@@ -73,9 +73,9 @@ class CustomerJdbcTemplateDataAccessServiceTest extends AbstractTestContainer {
     void willReturnEmptyWhenSelectCustomerByIdNoteFound() {
 
         Customer customer = new Customer(
-                20, faker.internet().safeEmailAddress()+ "-"+UUID.randomUUID(), faker.name().fullName()
+                faker.name().fullName(), faker.internet().safeEmailAddress()+ "-"+UUID.randomUUID(), "password", 20,
 
-        ) ;
+                Gender.MALE) ;
 
         underTest.insertCustomer(customer);
 
@@ -91,8 +91,8 @@ class CustomerJdbcTemplateDataAccessServiceTest extends AbstractTestContainer {
         String fakeName =  faker.name().fullName() ;
         String fakeEmail = faker.internet().safeEmailAddress()+ "-"+UUID.randomUUID() ;
         Customer customer = new Customer(
-                20, fakeEmail, fakeName
-        ) ;
+                fakeName, fakeEmail, "password", 20,
+                Gender.MALE) ;
         underTest.insertCustomer(customer);
         boolean actual= underTest.existPersonWithEmail(fakeEmail);
         assertThat(actual).isTrue() ;
@@ -113,8 +113,8 @@ class CustomerJdbcTemplateDataAccessServiceTest extends AbstractTestContainer {
         String fakeName =  faker.name().fullName() ;
         String fakeEmail = faker.internet().safeEmailAddress()+ "-"+UUID.randomUUID() ;
         Customer customer = new Customer(
-                20, fakeEmail, fakeName
-        ) ;
+                fakeName, fakeEmail, "password", 20,
+                Gender.MALE) ;
         underTest.insertCustomer(customer);
 
         Long id=underTest.selectAllCustomers().stream()
@@ -139,8 +139,8 @@ class CustomerJdbcTemplateDataAccessServiceTest extends AbstractTestContainer {
         String fakeName =  faker.name().fullName() ;
         String fakeEmail = faker.internet().safeEmailAddress()+ "-"+UUID.randomUUID() ;
         Customer customer = new Customer(
-                20, fakeEmail, fakeName
-        ) ;
+                fakeName, fakeEmail, "password", 20,
+                Gender.MALE) ;
         underTest.insertCustomer(customer);
 
         Long id=underTest.selectAllCustomers().stream()
@@ -157,8 +157,8 @@ class CustomerJdbcTemplateDataAccessServiceTest extends AbstractTestContainer {
         String fakeName =  faker.name().fullName() ;
         String fakeEmail = faker.internet().safeEmailAddress()+ "-"+UUID.randomUUID() ;
         Customer customer = new Customer(
-                20, fakeEmail, fakeName
-        ) ;
+                fakeName, fakeEmail, "password", 20,
+                Gender.MALE) ;
         underTest.insertCustomer(customer);
 
         Long id=underTest.selectAllCustomers().stream()
@@ -188,8 +188,8 @@ class CustomerJdbcTemplateDataAccessServiceTest extends AbstractTestContainer {
         String fakeName =  faker.name().fullName() ;
         String fakeEmail = faker.internet().safeEmailAddress()+ "-"+UUID.randomUUID() ;
         Customer customer = new Customer(
-                20, fakeEmail, fakeName
-        ) ;
+                fakeName, fakeEmail, "password", 20,
+                Gender.MALE) ;
         underTest.insertCustomer(customer);
 
         Long id=underTest.selectAllCustomers().stream()
@@ -220,8 +220,8 @@ class CustomerJdbcTemplateDataAccessServiceTest extends AbstractTestContainer {
         String fakeName =  faker.name().fullName() ;
         String fakeEmail = faker.internet().safeEmailAddress()+ "-"+UUID.randomUUID() ;
         Customer customer = new Customer(
-                20, fakeEmail, fakeName
-        ) ;
+                fakeName, fakeEmail, "password", 20,
+                Gender.MALE) ;
         underTest.insertCustomer(customer);
 
         Long id=underTest.selectAllCustomers().stream()
@@ -252,8 +252,8 @@ Integer newAge = 23;
         String fakeName =  faker.name().fullName() ;
         String fakeEmail = faker.internet().safeEmailAddress()+ "-"+UUID.randomUUID() ;
         Customer customer = new Customer(
-                20, fakeEmail, fakeName
-        ) ;
+                fakeName, fakeEmail, "password", 20,
+                Gender.MALE) ;
         underTest.insertCustomer(customer);
 
         Long id=underTest.selectAllCustomers().stream()
@@ -263,6 +263,7 @@ Integer newAge = 23;
 
         Customer update = new Customer() ;
         update.setId(id);
+        update.setGender(Gender.MALE);
         update.setEmail("newEmail");
         update.setAge(23);
         update.setName("new name");
@@ -270,7 +271,15 @@ Integer newAge = 23;
         underTest.updateCustomer(update);
 
         Optional<Customer> actual = underTest.selectCustomerById(id); ;
-        assertThat(actual).isPresent().hasValue(update) ;
+        assertThat(actual).isPresent().hasValueSatisfying(updatd->{
+            assertThat(update.getId()).isEqualTo(id) ;
+            assertThat(update.getGender()).isEqualTo(Gender.MALE) ;
+            assertThat(update.getName()).isEqualTo("new name") ;
+            assertThat(update.getEmail()).isEqualTo("newEmail") ;
+            assertThat(update.getAge()).isEqualTo(23) ;
+
+
+        }) ;
 
 
 
@@ -283,8 +292,8 @@ Integer newAge = 23;
         String fakeName =  faker.name().fullName() ;
         String fakeEmail = faker.internet().safeEmailAddress()+ "-"+UUID.randomUUID() ;
         Customer customer = new Customer(
-                20, fakeEmail, fakeName
-        ) ;
+                fakeName, fakeEmail, "password", 20,
+                Gender.MALE) ;
         underTest.insertCustomer(customer);
 
         Long id=underTest.selectAllCustomers().stream()

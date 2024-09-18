@@ -19,7 +19,8 @@ private final CustomerRowMapper customerRowMapper ;
     @Override
     public List<Customer> selectAllCustomers() {
         String sql = """
-                SELECT id , name , email , age FROM customer 
+                SELECT id , name , email ,password , age , gender
+                 FROM customer 
                 """ ;
       /*  RowMapper<Customer> customerRowMapper = (rs, rowNum) -> {
             Customer customer = new Customer(
@@ -46,7 +47,7 @@ private final CustomerRowMapper customerRowMapper ;
     @Override
     public Optional<Customer> selectCustomerById(Long  id) {
         String sql = """
-                SELECT id , name , email , age FROM customer WHERE id=?
+                SELECT id , name , email ,password, age , gender FROM customer WHERE id=?
                 """ ;
         return jdbcTemplate.query(sql , customerRowMapper , id).stream().findFirst();
 
@@ -56,10 +57,11 @@ private final CustomerRowMapper customerRowMapper ;
     public void insertCustomer(Customer customer) {
 
         String sql = """
-                INSERT INTO customer(name , email , age )
-                 VALUES(? , ? , ? )
+                INSERT INTO customer(name , email ,password, age , gender)
+                 VALUES(? , ? , ? , ? , ?  )
                 """ ;
-        int reslt = jdbcTemplate.update(sql , customer.getName() , customer.getEmail() , customer.getAge()) ;
+        int reslt = jdbcTemplate.update(sql , customer.getName() , customer.getEmail() , customer.getPassword(),customer.getAge() , customer.getGender().name()
+        ) ;
 
     }
 
@@ -92,11 +94,10 @@ private final CustomerRowMapper customerRowMapper ;
     @Override
     public boolean existPersonWithId(Long id) {
         String sql = """
-                SELECT id , name , email , age FROM customer WHERE id=?
+                SELECT id , name , email ,password ,  age , gender FROM customer WHERE id=?
                 """ ;
 
         boolean b = ! jdbcTemplate.query(sql, customerRowMapper, id).stream().findFirst().isEmpty();
-        System.out.println("----------> " + b);
         return   b;
 
     }
@@ -126,5 +127,10 @@ if(customer.getName() != null){
 
 
 
+    }
+
+    @Override
+    public Optional<Customer> selectCustomerByEmail(String Email) {
+        return Optional.empty();
     }
 }
