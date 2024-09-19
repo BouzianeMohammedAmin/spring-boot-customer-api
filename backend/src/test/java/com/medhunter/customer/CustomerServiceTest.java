@@ -27,11 +27,12 @@ class CustomerServiceTest {
     private CustomerService underTest ;
     private   AutoCloseable autoCloseable ;
 
+    private CustomerDTOMapper customerDTOMapper  = new CustomerDTOMapper();
 
     @BeforeEach
     void setUp() {
          autoCloseable = MockitoAnnotations.openMocks(this);
-        underTest = new CustomerService(customerDao , passwordEncoder ) ;
+        underTest = new CustomerService(customerDao , passwordEncoder  , customerDTOMapper) ;
     }
 
     @AfterEach
@@ -55,10 +56,11 @@ class CustomerServiceTest {
         Customer customer = new Customer(id , "amine" , "bouznaine@hmauil.com", "password", 12, Gender.MALE) ;
         when(customerDao.selectCustomerById(id)).thenReturn(Optional.of(customer)) ;
 
+        CustomerDTO expected = customerDTOMapper.apply(customer) ;
 
-        Customer actual =  underTest.getCustomer(id) ;
+        CustomerDTO actual =  underTest.getCustomer(id) ;
 
-        assertThat(actual).isEqualTo(customer) ;
+        assertThat(actual).isEqualTo(expected) ;
 
 
     }

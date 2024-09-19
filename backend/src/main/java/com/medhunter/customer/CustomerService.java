@@ -5,30 +5,39 @@ import com.medhunter.exception.DuplicateResourceException;
 import com.medhunter.exception.NoteFoundResourceExecption;
 import com.medhunter.exception.RequestValidateException;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 //@Component
 public class CustomerService {
 
     private final CustomerDao customerDao ;
     private final PasswordEncoder passwordEncoder ;
+    private final CustomerDTOMapper customerDTOMapper;
 
 
-    public CustomerService(@Qualifier("jpa") CustomerDao customerDao, PasswordEncoder passwordEncoder) {
+    public CustomerService(@Qualifier("jpa") CustomerDao customerDao, PasswordEncoder passwordEncoder, CustomerDTOMapper customerDTOMapper) {
         this.customerDao = customerDao;
         this.passwordEncoder = passwordEncoder;
+        this.customerDTOMapper = customerDTOMapper;
     }
 
-    List<Customer> getAllCustomer(){
+    List<CustomerDTO> getAllCustomer(){
 
-        return customerDao.selectAllCustomers() ;
+        return customerDao.selectAllCustomers().
+
+                stream().map(customerDTOMapper).collect(Collectors.toList());
     }
 
-    Customer getCustomer(Long id){
-        return  customerDao.selectCustomerById(id).orElseThrow(
+    CustomerDTO getCustomer(Long id){
+        return  customerDao.selectCustomerById(id)
+                .map(customerDTOMapper)
+                .orElseThrow(
                 ()->new NoteFoundResourceExecption("no exist customer with this id [%s]".formatted(id)));
 
     }
@@ -66,7 +75,9 @@ public class CustomerService {
 
     public void updateCustomerById(Long id, CustomerUpdateRequest request) {
 
-        Customer customer = getCustomer(id) ;
+        Customer customer =  customerDao.selectCustomerById(id)
+                .orElseThrow(()->new NoteFoundResourceExecption("no exist customer with this id [%s]".formatted(id)));
+
         boolean isChanged = false ;
 
         // name
